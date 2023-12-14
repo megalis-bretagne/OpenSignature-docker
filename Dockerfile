@@ -17,7 +17,7 @@ RUN apt-get update -qq && \
 
 # Téléchargement de mailsend depuis la source et installation
 RUN wget https://github.com/muquit/mailsend/archive/master.zip && \
-    unzip master.zip && \
+    unzip mailsend-master.zip && \
     cd mailsend-master && \
     make && \
     make install && \
