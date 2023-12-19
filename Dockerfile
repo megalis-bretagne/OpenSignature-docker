@@ -37,6 +37,10 @@ RUN wget https://github.com/muquit/mailsend/archive/master.zip && \
     rm -rf mailsend-master master.zip
 
 
+#MODULE APACHE
+RUN a2enmod dav
+RUN a2enmod dav_fs
+
 
 # PHP Extensions
 RUN docker-php-ext-configure intl
