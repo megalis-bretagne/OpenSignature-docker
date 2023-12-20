@@ -57,6 +57,7 @@ RUN mkdir opensignature
 # Apache,
 RUN wget https://gitlab.girondenumerique.fr/GirNumOpenSource/opensignature/-/archive/${OPENSIGNATURE_VERSION}/opensignature-${OPENSIGNATURE_VERSION}.zip \
     && unzip opensignature-${OPENSIGNATURE_VERSION}.zip -d /tmp \
+    && mv /tmp/opensignature-${OPENSIGNATURE_VERSION}/.htaccess /app/opensignature \
     && mv /tmp/opensignature-${OPENSIGNATURE_VERSION}/* /app/opensignature \
     && rm -rf /tmp/* opensignature-${OPENSIGNATURE_VERSION}.zip
 
