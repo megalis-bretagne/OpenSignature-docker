@@ -11,6 +11,7 @@ RUN apt-get update -qq && \
     wget \
     libicu-dev \
     locales \
+    qrencode \
     openssl \
     libcurl4-nss-dev \
     libssl-dev \
@@ -60,6 +61,11 @@ RUN wget https://gitlab.girondenumerique.fr/GirNumOpenSource/opensignature/-/arc
     && mv /tmp/opensignature-${OPENSIGNATURE_VERSION}/.htaccess /app/opensignature \
     && mv /tmp/opensignature-${OPENSIGNATURE_VERSION}/* /app/opensignature \
     && rm -rf /tmp/* opensignature-${OPENSIGNATURE_VERSION}.zip
+
+# CHOWN WWW-DATA
+RUN chown -R www-data /app/opensignature \
+    && chown www-data /app/opensignature/*
+
 
 COPY conf/vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY conf/apache.conf /etc/apache2/conf-available/opensignature.conf
