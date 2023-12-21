@@ -37,6 +37,15 @@ RUN wget https://github.com/muquit/mailsend/archive/master.zip && \
     cd .. && \
     rm -rf mailsend-master master.zip
 
+# Téléchargement et installation de incron
+RUN wget https://github.com/ar-/incron/archive/refs/heads/master.zip && \
+    unzip master.zip && \
+    cd incron-master && \
+    make -j8 && \
+    make install && \
+    cd .. && \
+    rm -rf incron-master master.zip
+
 
 #MODULE APACHE
 RUN a2enmod dav
