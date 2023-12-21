@@ -75,6 +75,15 @@ RUN wget https://gitlab.girondenumerique.fr/GirNumOpenSource/opensignature/-/arc
 RUN chown -R www-data /app/opensignature \
     && chown www-data /app/opensignature/*
 
+RUN chmod +x /app/opensignature/app/script/initincrontab
+
+USER www-data
+RUN incrontab -l
+RUN  /app/opensignature/app/script/initincrontab
+
+
+USER root
+
 
 COPY conf/vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY conf/apache.conf /etc/apache2/conf-available/opensignature.conf
