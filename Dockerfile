@@ -30,12 +30,15 @@ ENV LANG fr_FR.UTF-8
 
 # Téléchargement de mailsend depuis la source et installation
 RUN wget https://github.com/muquit/mailsend/archive/master.zip && \
-    unzip master.zip && \
-    cd mailsend-master && \
-    ./configure --with-openssl=/usr \
-    make install && \
-    cd .. && \
-    rm -rf mailsend-master master.zip
+    unzip master.zip
+
+RUN cd mailsend-master && \
+    ./configure --with-openssl=/usr
+
+RUN cd mailsend-master && \
+    make install
+
+RUN rm -rf master.zip mailsend-master
 
 # Téléchargement et installation de incron
 RUN wget https://github.com/ar-/incron/archive/refs/heads/master.zip && \
