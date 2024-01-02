@@ -16,6 +16,8 @@ RUN apt-get update -qq && \
     libcurl4-nss-dev \
     libssl-dev \
     openjdk-11-jre-headless \
+    libmagickwand-dev \
+    libmagickcore-dev \
     && apt-get clean -y \
     && rm -rf /var/lib/{apt,dpkg,cache,log,tmp}/*
 
@@ -58,6 +60,7 @@ RUN a2enmod dav_fs
 # PHP Extensions
 RUN docker-php-ext-configure intl
 RUN pecl install redis
+RUN pecl install imagick
 RUN docker-php-ext-install json gettext curl intl
 COPY conf/php.ini /usr/local/etc/php/conf.d/opensignature.ini
 
@@ -80,18 +83,16 @@ RUN chown -R www-data /app/opensignature \
 
 RUN chmod +x /app/opensignature/app/script/initincrontab
 
+RUN ln -s /usr/local/bin/php /usr/bin/php
 USER www-data
-RUN incrontab -l
-RUN  /app/opensignature/app/script/initincrontab
+RUN /app/opensignature/app/script/initincrontab
 
 
 USER root
-
 
 COPY conf/vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY conf/apache.conf /etc/apache2/conf-available/opensignature.conf
 RUN a2enmod rewrite remoteip && \
     a2enconf opensignature
-
 
 CMD ["apache2-foreground"]
