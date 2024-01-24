@@ -1,31 +1,34 @@
-FROM php:7.4-apache
+FROM php:8.3-apache-bookworm
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 ARG OPENSIGNATURE_VERSION=d736b55effd8fcf8137818603329ca522fe29313
 
-# git, unzip & zip are for composer
-RUN apt-get update -qq && \
+RUN set -eux; \
+    apt-get update; \
     apt-get install -qy \
     unzip \
     wget \
     libicu-dev \
-    locales \
     qrencode \
     openssl \
     libcurl4-nss-dev \
     libssl-dev \
-    openjdk-11-jre-headless \
-    libmagickwand-dev \
-    libmagickcore-dev \
-    && apt-get clean -y \
-    && rm -rf /var/lib/{apt,dpkg,cache,log,tmp}/*
+    openjdk-17-jre-headless \
+    jq\
+    incron\
+    coreutils\
+    ghostscript\
+    qpdf\
+    ; \
+    apt-get clean -y;  \
+    rm -rf /var/lib/{apt,dpkg,cache,log,tmp}/*
 
 
-RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
-    sed -i -e 's/# fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen && \
-    dpkg-reconfigure --frontend=noninteractive locales && \
-    update-locale LANG=fr_FR.UTF-8
+# RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+#      sed -i -e 's/# fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen
+# #     dpkg-reconfigure --frontend=noninteractive locales && \
+# #     update-locale LANG=fr_FR.UTF-8
 ENV LC_ALL fr_FR.UTF-8
 ENV LANGUAGE fr_FR:en_US:fr
 ENV LANG fr_FR.UTF-8
@@ -42,15 +45,6 @@ RUN cd mailsend-master && \
 
 RUN rm -rf master.zip mailsend-master
 
-# Téléchargement et installation de incron
-RUN wget https://github.com/ar-/incron/archive/refs/heads/master.zip && \
-    unzip master.zip && \
-    cd incron-master && \
-    make -j8 && \
-    make install && \
-    cd .. && \
-    rm -rf incron-master master.zip
-
 
 #MODULE APACHE
 RUN a2enmod dav
@@ -60,8 +54,8 @@ RUN a2enmod dav_fs
 # PHP Extensions
 RUN docker-php-ext-configure intl
 RUN pecl install redis
-RUN pecl install imagick
-RUN docker-php-ext-install json gettext curl intl
+#RUN pecl install imagick
+RUN docker-php-ext-install gettext curl intl
 COPY conf/php.ini /usr/local/etc/php/conf.d/opensignature.ini
 
 
@@ -89,6 +83,11 @@ RUN /app/opensignature/app/script/initincrontab
 
 
 USER root
+
+# Purge packagae
+
+RUN set -eux; \
+    apt-get -y purge wget unzip
 
 COPY conf/vhost.conf /etc/apache2/sites-available/000-default.conf
 COPY conf/apache.conf /etc/apache2/conf-available/opensignature.conf
