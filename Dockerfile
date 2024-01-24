@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:8.3-apache-bookworm
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
@@ -15,9 +15,14 @@ RUN apt-get update -qq && \
     openssl \
     libcurl4-nss-dev \
     libssl-dev \
-    openjdk-11-jre-headless \
-    libmagickwand-dev \
-    libmagickcore-dev \
+    # openjdk-11-jre-headless \
+    # libmagickwand-dev \
+    # libmagickcore-dev \
+    jq\
+    incron\
+    coreutils\
+    ghostscript\
+    qpdf\
     && apt-get clean -y \
     && rm -rf /var/lib/{apt,dpkg,cache,log,tmp}/*
 
@@ -60,7 +65,7 @@ RUN a2enmod dav_fs
 # PHP Extensions
 RUN docker-php-ext-configure intl
 RUN pecl install redis
-RUN pecl install imagick
+#RUN pecl install imagick
 RUN docker-php-ext-install json gettext curl intl
 COPY conf/php.ini /usr/local/etc/php/conf.d/opensignature.ini
 
