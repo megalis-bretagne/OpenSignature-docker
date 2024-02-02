@@ -8,6 +8,7 @@ RUN set -eux; \
     apt-get update; \
     apt-get install -qy \
     unzip \
+    zip \
     wget \
     libicu-dev \
     libcurl4-nss-dev \
