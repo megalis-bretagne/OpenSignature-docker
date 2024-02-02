@@ -2,7 +2,7 @@ FROM php:8.3-apache-bookworm
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-ARG OPENSIGNATURE_VERSION=d736b55effd8fcf8137818603329ca522fe29313
+ARG OPENSIGNATURE_VERSION=abcfefb62ca570bd55d0bd02b71f35c755c4ea09
 
 RUN set -eux; \
     apt-get update; \
@@ -10,20 +10,18 @@ RUN set -eux; \
     unzip \
     wget \
     libicu-dev \
+    libcurl4-nss-dev \
     qrencode \
     openssl \
     locales \
-    libcurl4-nss-dev \
-    libssl-dev \
     openjdk-17-jre-headless \
     jq\
     incron\
     coreutils\
     ghostscript\
     qpdf\
-    ; \
-    apt-get clean -y;  \
-    rm -rf /var/lib/{apt,dpkg,cache,log,tmp}/*
+    && apt-get clean -y \
+    && rm -rf /var/lib/{apt,dpkg,cache,log,tmp}/*
 
 
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -34,18 +32,6 @@ RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
 ENV LC_ALL fr_FR.UTF-8
 ENV LANGUAGE fr_FR:en_US:fr
 ENV LANG fr_FR.UTF-8
-
-# Téléchargement de mailsend depuis la source et installation
-RUN wget https://github.com/muquit/mailsend/archive/master.zip && \
-    unzip master.zip
-
-RUN cd mailsend-master && \
-    ./configure --with-openssl=/usr
-
-RUN cd mailsend-master && \
-    make install
-
-RUN rm -rf master.zip mailsend-master
 
 
 #MODULE APACHE
