@@ -55,6 +55,10 @@ RUN wget https://gitlab.girondenumerique.fr/GirNumOpenSource/opensignature/-/arc
     && mv /tmp/opensignature-${OPENSIGNATURE_VERSION}/* /app/opensignature \
     && rm -rf /tmp/* opensignature-${OPENSIGNATURE_VERSION}.zip
 
+
+# Copy Script
+COPY script/send_mail.sh /app/opensignature/app/script/melsnd
+
 # CHOWN WWW-DATA
 RUN chown -R www-data /app/opensignature \
     && chown www-data /app/opensignature/*
