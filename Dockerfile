@@ -35,15 +35,10 @@ ENV LANGUAGE fr_FR:en_US:fr
 ENV LANG fr_FR.UTF-8
 
 
-#MODULE APACHE
-RUN a2enmod dav
-RUN a2enmod dav_fs
-
 
 # PHP Extensions
 RUN docker-php-ext-configure intl
 RUN pecl install redis
-#RUN pecl install imagick
 RUN docker-php-ext-install gettext curl intl
 COPY conf/php.ini /usr/local/etc/php/conf.d/opensignature.ini
 
@@ -74,7 +69,7 @@ RUN /app/opensignature/app/script/initincrontab
 
 USER root
 
-# Purge packagae
+# Purge package
 
 RUN set -eux; \
     apt-get -y purge wget unzip
