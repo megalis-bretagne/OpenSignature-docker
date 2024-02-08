@@ -21,6 +21,7 @@ RUN set -eux; \
     coreutils\
     ghostscript\
     qpdf\
+    redis-tools\
     && apt-get clean -y \
     && rm -rf /var/lib/{apt,dpkg,cache,log,tmp}/*
 
