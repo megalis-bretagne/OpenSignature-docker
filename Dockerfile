@@ -2,7 +2,9 @@ FROM php:8.3-apache-bookworm
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-ARG OPENSIGNATURE_VERSION=abcfefb62ca570bd55d0bd02b71f35c755c4ea09
+ARG OPENSIGNATURE_VERSION=698c8608288ce0d0348d43e51fd406469d747993
+# ARG GID=1000
+# ARG UID=1000
 
 RUN set -eux; \
     apt-get update; \
@@ -25,6 +27,10 @@ RUN set -eux; \
     && apt-get clean -y \
     && rm -rf /var/lib/{apt,dpkg,cache,log,tmp}/*
 
+
+# RUN addgroup --gid "$GID" nonroot
+# RUN adduser --uid "$UID" --gid "$GID" --disabled-password --gecos "" nonroot
+# RUN echo 'nonroot ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
 
 RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
     sed -i -e 's/# fr_FR.UTF-8 UTF-8/fr_FR.UTF-8 UTF-8/' /etc/locale.gen && \
@@ -72,7 +78,6 @@ RUN ln -s /usr/local/bin/php /usr/bin/php
 USER www-data
 RUN /app/opensignature/app/script/initincrontab
 
-
 USER root
 
 # Purge package
@@ -85,4 +90,5 @@ COPY conf/apache.conf /etc/apache2/conf-available/opensignature.conf
 RUN a2enmod rewrite remoteip && \
     a2enconf opensignature
 
-CMD ["apache2-foreground"]
+COPY --chmod=760 docker-entrypoint.sh /app/docker-entrypoint.sh
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
