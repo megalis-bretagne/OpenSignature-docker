@@ -24,12 +24,14 @@ jobs:
     with:
       context: .
       dockerfile: Dockerfile
-      image-name: ${{ github.repository_owner	}}/opensignature-webapp
+      description: Image contenant l'application Web Php Opensiganture ainsi que le service de signature.
+      image-name: ${{ github.repository_owner	}}/opensignature
 
   build-docker-corn :
     uses: ./.github/workflows/common-build-docker.yml
     with:
       context: .
       dockerfile: Dockerfile.cron
+      description: Image contenant les scripts de purges des dossiers
       image-name: ${{ github.repository_owner	}}/opensignature-cron
    

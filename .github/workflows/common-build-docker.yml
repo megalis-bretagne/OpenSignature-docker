@@ -11,6 +11,9 @@ on:
       dockerfile: #chemin du dockerfile
         type: string
         required: true
+      description: 
+        type: string
+        required: true
 
 
 env:
@@ -72,6 +75,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          outputs: type=image,name=target,annotation-index.org.opencontainers.image.description=${{ inputs.description }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ inputs.image-name }}:buildcache
           cache-to:   type=registry,ref=${{ env.REGISTRY }}/${{ inputs.image-name }}:buildcache,mode=max
 

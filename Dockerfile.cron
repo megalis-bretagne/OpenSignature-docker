@@ -1,5 +1,6 @@
 FROM debian:bookworm-slim
 
+LABEL org.opencontainers.image.description Cron de purge pour opensignature
 
 ARG OPENSIGNATURE_VERSION=698c8608288ce0d0348d43e51fd406469d747993
 # ARG GID=1000
