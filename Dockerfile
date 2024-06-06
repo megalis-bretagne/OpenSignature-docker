@@ -71,7 +71,7 @@ RUN chmod +x /app/opensignature/app/script/melsnd
 COPY script/class.Sms_Mail.php /app/opensignature/app/src/class.Sms_Mail.php
 
 # COPY Custom img
-COPY themes/* /app/opensignature/pub/
+COPY themes /app/opensignature/pub/
 
 # CHOWN WWW-DATA
 RUN chown -R www-data /app/opensignature \
