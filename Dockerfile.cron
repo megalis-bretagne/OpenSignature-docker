@@ -1,0 +1,37 @@
+FROM debian:bookworm-slim
+
+
+ARG OPENSIGNATURE_VERSION=698c8608288ce0d0348d43e51fd406469d747993
+# ARG GID=1000
+# ARG UID=1000
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -qy \
+    wget \
+    cron \
+    jq \
+    redis-tools\
+    && apt-get clean -y \
+    && rm -rf /var/lib/{apt,dpkg,cache,log,tmp}/*
+
+
+
+WORKDIR /app/opensignature/app/script
+# Copy script file
+RUN wget https://gitlab.girondenumerique.fr/GirNumOpenSource/opensignature/-/raw/${OPENSIGNATURE_VERSION}/app/script/manage_briefcase
+
+RUN chmod +x manage_briefcase
+
+# copie des cron
+COPY --chmod=644 script/opensignature-cron /etc/cron.d/opensignature-cron
+
+# Purge package
+RUN set -eux; \
+    apt-get -y purge wget
+
+RUN touch /var/log/cron.log
+RUN echo "Executing cron" >> /var/log/cron.log
+RUN crontab /etc/cron.d/opensignature-cron
+
+CMD ["sh", "-c", "cron && tail -f /var/log/cron.log"]

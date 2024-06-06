@@ -1,0 +1,87 @@
+version: '3.8'
+## Fichier docker compose d'exemple.
+
+##Se référer à la documentation d'openSignature pour remplir les 5 fichiers de configurations
+## Possibilité d'utiliser un certificat auto signé pour le test
+
+volumes:
+  data:
+  proof:
+  spool:
+  data_redis:
+
+configs:
+  opensignature_config.v1:
+    file: config/opensignature/Config.php
+  opensignature_mailçconfig.v1:
+    file: config/opensignature/MailConfig.sh
+  opensignature_cms.v1:
+    file: config/opensignature/SignCmsConfig.php
+  opensignature_pades.v1:
+    file: config/opensignature/SignPadesConfig.php
+  opensignature_tsa.v1:
+    file: config/opensignature/SignTsaConfig.php
+
+services:
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - data_redis:/data
+
+  opensignature:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    configs:
+      - source: opensignature_config.v1
+        target: /app/opensignature/config/Config.php
+      - source: opensignature_mailçconfig.v1
+        target: /app/opensignature/config/MailConfig.sh
+      - source: opensignature_cms.v1
+        target: /app/opensignature/config/SignCmsConfig.php
+      - source: opensignature_pades.v1
+        target: /app/opensignature/config/SignPadesConfig.php
+      - source: opensignature_tsa.v1
+        target: /app/opensignature/config/SignTsaConfig.php
+    volumes:
+      - data:/app/opensignature/data
+      - proof:/app/opensignature/proof
+      - spool:/app/opensignature/tmp
+      - ${OPENSIGNATURE_CERTIFICATS}:/certificats
+    ports:
+      - 80:80
+
+  opensignature_poolsign:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: poolsign
+    configs:
+      - source: opensignature_config.v1
+        target: /app/opensignature/config/Config.php
+      - source: opensignature_mailçconfig.v1
+        target: /app/opensignature/config/MailConfig.sh
+      - source: opensignature_cms.v1
+        target: /app/opensignature/config/SignCmsConfig.php
+      - source: opensignature_pades.v1
+        target: /app/opensignature/config/SignPadesConfig.php
+      - source: opensignature_tsa.v1
+        target: /app/opensignature/config/SignTsaConfig.php
+    volumes:
+      - data:/app/opensignature/data
+      - proof:/app/opensignature/proof
+      - spool:/app/opensignature/tmp
+      - ${OPENSIGNATURE_CERTIFICATS}:/certificats
+
+  opensignature_cron:
+    build:
+      context: .
+      dockerfile: Dockerfile.cron
+    configs:
+      - source: opensignature_config.v1
+        target: /app/opensignature/config/Config.php
+    volumes:
+      - data:/app/opensignature/data
