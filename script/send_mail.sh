@@ -62,9 +62,10 @@ $(cat ${MFIL})
 case ${MELSNDMODE} in
 
 "REAL" )
-    curl --ssl-reqd --url "${SMTPS}:${SMTPP}" --mail-from "${FROM}" --mail-rcpt "${MTO}" --upload-file - <<EOF 
+    curl --url "${SMTPS}:${SMTPP}" --mail-from "${FROM}" --mail-rcpt "${MTO}" --upload-file - <<EOF 
 $MESSAGE
 EOF
+    echo "[REAL][SEND MAIL] $(date +"%H:%M:%S") => $(cat ${MFIL})" >> /tmp/melsnd.log
     ;;
     
 "DEBUG" )
