@@ -67,6 +67,12 @@ RUN wget https://gitlab.girondenumerique.fr/GirNumOpenSource/opensignature/-/arc
 COPY script/send_mail.sh /app/opensignature/app/script/melsnd
 RUN chmod +x /app/opensignature/app/script/melsnd
 
+#Copy class debug SMS mail
+COPY script/class.Sms_Mail.php /app/opensignature/app/src/class.Sms_Mail.php
+
+# COPY Custom img
+COPY themes/* /app/opensignature/pub/
+
 # CHOWN WWW-DATA
 RUN chown -R www-data /app/opensignature \
     && chown www-data /app/opensignature/*

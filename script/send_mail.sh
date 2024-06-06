@@ -62,7 +62,7 @@ $(cat ${MFIL})
 case ${MELSNDMODE} in
 
 "REAL" )
-    curl --ssl-reqd --url "${SMTPS}:${SMTPP}" --user "${SMTUZ}:${SMTPZ}" --mail-from "${FROM}" --mail-rcpt "${MTO}" --upload-file - <<EOF 
+    curl --ssl-reqd --url "${SMTPS}:${SMTPP}" --mail-from "${FROM}" --mail-rcpt "${MTO}" --upload-file - <<EOF 
 $MESSAGE
 EOF
     ;;
